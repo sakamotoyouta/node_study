@@ -3,6 +3,17 @@ html(lang="ja")
     head
         meta(charset="utf-8")
     body
+        if user
+            nav
+                div(style="width: 200px")
+                    p(style="text-align: center") ユーザー名：#{user.username}
+                    img(src=user.avatar_path, width="200px", height="auto")
+        else
+            nav
+                p
+                    a(href="/signin") ユーザー登録
+                p
+                    a(href="/login") ログイン
         h1 投稿一覧
         section
             each msg in messages
@@ -11,4 +22,4 @@ html(lang="ja")
                     time #{msg.date}
                     p #{msg.message}
                     if msg.image_path
-                        img(src=msg.image_path)
+                        img(src=msg.image_path, width="200px", height="auto")
