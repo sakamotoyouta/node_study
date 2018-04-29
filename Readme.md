@@ -3,7 +3,7 @@
 環境周りなどは、一から私が設定したので最適化不足の箇所があるかもしれません。
 
 # DB起動方法
-sudo mongod --dbpath db
+sudo mongod --dbpath server/db
 
 # サーバ起動方法
-npm app.js
+node server/app.js
