@@ -9,6 +9,11 @@ const User = require('./schema/User');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
+const webpack = require('webpack');
+const middleware = require('webpack-dev-middleware');
+const config = require('../webpack.config.babel')
+const compiler = webpack(config);
+
 
 /*
  * 使用サーバ
@@ -26,15 +31,10 @@ mongoose.connect('mongodb://localhost:27017/chatapp', (err) => {
   }
 });
 
-// app.use(function(req, res, next) {
-//     return res.send('Hello World !');
-// });
-// app.get('/', (req, res) => res.send('Hello World!'));
-// app.get('/hoge', (req, res) => res.send('Hoge'));
-
 /*
  * ミドルウェア
  */
+app.use(express.static('public'));
 app.use(bodyparser());
 app.use(session({ secret: 'HogeFuga' }));
 app.use(passport.initialize());
@@ -54,6 +54,15 @@ passport.serializeUser((user, done) => { done(null, user._id); });
 passport.deserializeUser((id, done) => {
   User.findOne({ _id: id }, (err, user) => { done(err, user); });
 });
+// webpack
+app.use(require("webpack-hot-middleware")(compiler));
+app.use(middleware(compiler, {
+  noInfo: true,
+  watchOptions: {
+    ignored: /node_modules/
+  },
+  publicPath: config.output.publicPath
+}));
 
 /*
  * Viewの設定
@@ -65,13 +74,14 @@ app.set('view engine', 'pug');
  * ルーティング
  */
 app.get('/', (req, res) => {
-  Message.find({}, (err, messages) => {
-    if (err) throw err;
-    return res.render('index', {
-      messages,
-      user: req.session && req.session.user ? req.session.user : null,
-    });
-  });
+  // Message.find({}, (err, messages) => {
+  //   if (err) throw err;
+  //   return res.render('index', {
+  //     messages,
+  //     user: req.session && req.session.user ? req.session.user : null,
+  //   });
+  // });
+  app.static(`${__dirname}/public/index.html`);
 });
 
 app.get('/signin', (req, res) => res.render('signin'));

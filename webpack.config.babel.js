@@ -4,7 +4,10 @@ const path = require('path');
 module.exports = {
   mode: 'development',
 
-  entry: "./app/index.tsx",
+  entry: [
+    'webpack-hot-middleware/client',
+    "./frontend/index",
+  ],
 
   output: {
     filename: 'bundle.js',
@@ -15,26 +18,19 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts.?$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
         use: [
-          {loader: 'awesome-typescript-loader'}
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: true,
+              plugins: ['react-hot-loader/babel'],
+            }
+          },
+          'awesome-typescript-loader',
         ]
       },
-      {
-        enforce: 'post',
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              'es2015',
-              'react',
-            ]
-          }
-        }]
-      }
     ],
   },
 
@@ -42,15 +38,5 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".jsx"]
   },
 
-  // externals: {
-  //   "react": "React",
-  //   "react-dom": "ReactDOM"
-  // },
-
-  devServer: {
-    contentBase: `${__dirname}/public/`,
-    watchContentBase: true,
-    open: true,
-    port: 3000,
-  }
+  plugins: [new webpack.HotModuleReplacementPlugin()]
 };
