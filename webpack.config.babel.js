@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -26,6 +27,7 @@ module.exports = {
             options: {
               babelrc: true,
               plugins: ['react-hot-loader/babel'],
+              presets: ['es2015', 'react'],
             }
           },
           'awesome-typescript-loader',
@@ -38,5 +40,8 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".jsx"]
   },
 
-  plugins: [new webpack.HotModuleReplacementPlugin()]
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new CaseSensitivePathsPlugin()
+  ]
 };

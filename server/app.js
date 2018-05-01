@@ -57,7 +57,6 @@ passport.deserializeUser((id, done) => {
 // webpack
 app.use(require("webpack-hot-middleware")(compiler));
 app.use(middleware(compiler, {
-  noInfo: true,
   watchOptions: {
     ignored: /node_modules/
   },
