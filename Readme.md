@@ -5,5 +5,5 @@
 # DB起動方法
 sudo mongod --dbpath server/db
 
-# サーバ起動方法
-node server/app.js
+# サーバ起動方法 ( Expressサーバが起動します )
+npm start
