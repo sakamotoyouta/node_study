@@ -7,3 +7,7 @@ sudo mongod --dbpath server/db
 
 # サーバ起動方法 ( Expressサーバが起動します )
 npm start
+
+# TODO
+[ ] body-parserはdeprecatedなので代替方法を探す
+[ ] express-sessionはdeprecatedなので代替方法を探す
