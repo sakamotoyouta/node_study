@@ -9,5 +9,5 @@ sudo mongod --dbpath server/db
 npm start
 
 # TODO
-[ ] body-parserはdeprecatedなので代替方法を探す
-[ ] express-sessionはdeprecatedなので代替方法を探す
+- [ ] body-parserはdeprecatedなので代替方法を探す
+- [ ] express-sessionはdeprecatedなので代替方法を探す
