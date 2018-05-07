@@ -142,6 +142,17 @@ app.post('/update', fileUpload(), (req, res) => {
 });
 
 /*
+ * API
+ */
+app.get('/postList', (req, res) => {
+  Message.find({}, (err, messages) => {
+    if (err) throw err;
+    return res.send(messages);
+  });
+});
+
+
+/*
  * サーバ立ち上げ
  */
 const server = http.createServer(app);

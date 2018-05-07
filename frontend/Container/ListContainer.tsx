@@ -2,40 +2,47 @@ import * as React from 'react';
 import { Provider, connect } from 'react-redux';
 import { hot } from 'react-hot-loader';
 import FormInputComponent from '../Components/FormInputComponent';
-import FormDisplayComponent from '../Components/FormDisplayComponent';
+import PostListDisplayComponent from '../Components/PostListDisplayComponent';
 import send from '../Action/SendAction';
+import fetchPostList, { postedItem } from '../Action/FetchPostListAction';
+
+interface ListProps {
+  dispatch: Function;
+  onClick: ((v: string) => void);
+  value: string;
+  postList: [postedItem];
+}
 
 /*
  * Container
  * 一旦変な名前つけてます。
  */
 class _ListContainer extends React.Component<ListProps, {}> {
+  componentWillMount() {
+    const { dispatch } = this.props;
+    fetchPostList(dispatch);
+  }
+
   render() {
     return (
       <div>
-        <FormInputComponent handleClick={this.props.onClick} />
-        <FormDisplayComponent data={this.props.value} />
+        <PostListDisplayComponent postList={this.props.postList} />
       </div>
     );
   }
 }
 
-interface ListProps {
-  onClick: ((v: string) => void);
-  value: string;
-}
-
-
-function mapStateToProps(state) {
+function mapStateToProps(store) {
   return {
-    value: state.value,
+    value: store.value,
+    postList: store.postList
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClick(value) {
-      dispatch(send(value));
+    dispatch(action) {
+      dispatch(action);
     },
   };
 }

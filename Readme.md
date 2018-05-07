@@ -11,3 +11,6 @@ npm start
 # TODO
 - [ ] body-parserはdeprecatedなので代替方法を探す
 - [ ] express-sessionはdeprecatedなので代替方法を探す
+- [ ] エラーハンドリングは後回しにしている
+- [ ] app.jsを適切にモジュール化する
+- [ ] app.jsにtypescriptを適用する
