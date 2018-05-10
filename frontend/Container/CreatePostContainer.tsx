@@ -1,15 +1,12 @@
 import * as React from 'react';
 import { Provider, connect } from 'react-redux';
 import { hot } from 'react-hot-loader';
-import { push } from 'react-router-redux';
-import FormInputComponent from '../Components/FormInputComponent';
-import PostListDisplayComponent from '../Components/PostListDisplayComponent';
+import CreatePostFormComponent from '../Components/CreatePostFormComponent';
 import send from '../Action/SendAction';
 import fetchPostList, { postedItem } from '../Action/FetchPostListAction';
 
 interface ListProps {
   dispatch: Function;
-  pushHistory(url: string): void;
   onClick: ((v: string) => void);
   value: string;
   postList: [postedItem];
@@ -19,18 +16,12 @@ interface ListProps {
  * Container
  * 一旦変な名前つけてます。
  */
-class _ListContainer extends React.Component<ListProps, {}> {
-  componentWillMount() {
-    fetchPostList(this.props.dispatch);
-  }
+class _CreatePostContainer extends React.Component<ListProps, {}> {
 
   render() {
     return (
       <div>
-        <PostListDisplayComponent
-          postList={this.props.postList}
-          pushHistory={this.props.pushHistory}
-        />
+        <CreatePostFormComponent />
       </div>
     );
   }
@@ -45,18 +36,15 @@ function mapStateToProps(store) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    pushHistory(url) {
-      dispatch(push(url));
-    },
     dispatch(action) {
       dispatch(action);
     },
   };
 }
 
-const ListContainer = connect(
+const CreatePostContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(_ListContainer);
+)(_CreatePostContainer);
 
-export default hot(module)(ListContainer);
+export default hot(module)(CreatePostContainer);

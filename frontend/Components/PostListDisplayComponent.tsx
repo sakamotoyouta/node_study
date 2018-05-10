@@ -3,9 +3,13 @@ import { hot } from 'react-hot-loader';
 import {GridList, GridTile} from 'material-ui/GridList';
 import IconButton from 'material-ui/IconButton';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import RaisedButton from 'material-ui/RaisedButton';
 import { postedItem } from '../Action/FetchPostListAction';
 
-interface PostListDisplayProps { postList: any; }
+interface PostListDisplayProps {
+  postList: any;
+  pushHistory(url: string): void;
+}
 
 class PostListDisplayComponent extends React.Component<PostListDisplayProps, {}> {
   static styles: {[key: string]: object;} = {
@@ -43,6 +47,12 @@ class PostListDisplayComponent extends React.Component<PostListDisplayProps, {}>
     return (
       <div>
         <h2>Post List</h2>
+        <RaisedButton
+          label="投稿する"
+          labelPosition="before"
+          containerElement="label"
+          onTouchTap={() => {this.props.pushHistory('/CreatePost/');}}
+        />
         <div style={PostListDisplayComponent.styles.root}>
           <GridList cellHeight={180} style={PostListDisplayComponent.styles.gridList}>
             {this.createViewData()}

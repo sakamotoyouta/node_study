@@ -6,7 +6,6 @@ import { ActionType } from '../Constants/AppConstants';
  */
 export default function fetchPostList(dispatch: Function): void {
   axios.get('/postList').then((res) => {
-    console.log('dispatch!!');
     dispatch(receivePostList(res.data));
   });
 }

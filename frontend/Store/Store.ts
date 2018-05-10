@@ -1,4 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
+import createHistory from 'history/createBrowserHistory';
+import { routerReducer, routerMiddleware} from 'react-router-redux';
 import formReducer from '../Reducer/FormReducer';
 import postListReducer from '../Reducer/PostListReducer';
 
@@ -10,7 +12,7 @@ const initialState: any = {
   postList: [],
 };
 
-const rootReducer = combineReducers({
+const combinedReducer = combineReducers({
   value: formReducer,
   postList: postListReducer,
 });
@@ -18,6 +20,9 @@ const rootReducer = combineReducers({
 /*
  * Store
  */
-const Store = createStore(rootReducer, initialState);
+const history = createHistory();
+const middleware = routerMiddleware(history);
+const Store = createStore(combinedReducer,initialState, applyMiddleware(middleware));
 
+export { history };
 export default Store;

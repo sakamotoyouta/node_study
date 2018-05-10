@@ -11,7 +11,9 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const webpack = require('webpack');
 const middleware = require('webpack-dev-middleware');
-const config = require('../webpack.config.babel')
+const hotMiddleware = require('webpack-hot-middleware');
+const config = require('../webpack.config.babel');
+
 const compiler = webpack(config);
 
 
@@ -34,7 +36,7 @@ mongoose.connect('mongodb://localhost:27017/chatapp', (err) => {
 /*
  * ミドルウェア
  */
-app.use(express.static('public'));
+app.use(express.static(`${__dirname}/public`));
 app.use(bodyparser());
 app.use(session({ secret: 'HogeFuga' }));
 app.use(passport.initialize());
@@ -55,12 +57,12 @@ passport.deserializeUser((id, done) => {
   User.findOne({ _id: id }, (err, user) => { done(err, user); });
 });
 // webpack
-app.use(require("webpack-hot-middleware")(compiler));
+app.use(hotMiddleware(compiler));
 app.use(middleware(compiler, {
   watchOptions: {
-    ignored: /node_modules/
+    ignored: /node_modules/,
   },
-  publicPath: config.output.publicPath
+  publicPath: config.output.publicPath,
 }));
 
 /*
@@ -70,18 +72,46 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 /*
+ * API
+ */
+app.get('/postList', (req, res) => {
+  Message.find({}, (err, messages) => {
+    if (err) throw err;
+    return res.send(messages);
+  });
+});
+
+app.post('/postList', (req, res) => {
+  if (req.files && req.files.image) {
+    req.files.image.mv(`./image/${req.files.image.name}`, (err) => {
+      if (err) throw err;
+      const newMessage = new Message({
+        username: req.body.username,
+        message: req.body.message,
+        image_path: `/image/${req.files.image.name}`,
+      });
+      newMessage.save((saveErr) => {
+        if (saveErr) throw saveErr;
+        return res.redirect('/');
+      });
+    });
+  } else {
+    const newMessage = new Message({
+      username: req.body.username,
+      message: req.body.message,
+    });
+    newMessage.save((saveErr) => {
+      if (saveErr) throw saveErr;
+      return res.redirect('/');
+    });
+  }
+});
+
+
+/*
  * ルーティング
  */
-app.get('/', (req, res) => {
-  // Message.find({}, (err, messages) => {
-  //   if (err) throw err;
-  //   return res.render('index', {
-  //     messages,
-  //     user: req.session && req.session.user ? req.session.user : null,
-  //   });
-  // });
-  app.static(`${__dirname}/public/index.html`);
-});
+app.get('/');
 
 app.get('/signin', (req, res) => res.render('signin'));
 app.post('/signin', fileUpload(), (req, res) => {
@@ -114,42 +144,35 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
   });
 });
 
-app.get('/update', (req, res) => res.render('update'));
-app.post('/update', fileUpload(), (req, res) => {
-  if (req.files && req.files.image) {
-    req.files.image.mv(`./image/${req.files.image.name}`, (err) => {
-      if (err) throw err;
-      const newMessage = new Message({
-        username: req.body.username,
-        message: req.body.message,
-        image_path: `/image/${req.files.image.name}`,
-      });
-      newMessage.save((saveErr) => {
-        if (saveErr) throw saveErr;
-        return res.redirect('/');
-      });
-    });
-  } else {
-    const newMessage = new Message({
-      username: req.body.username,
-      message: req.body.message,
-    });
-    newMessage.save((saveErr) => {
-      if (saveErr) throw saveErr;
-      return res.redirect('/');
-    });
-  }
-});
+// app.get('/update', (req, res) => res.render('update'));
+// app.post('/update', fileUpload(), (req, res) => {
+//   if (req.files && req.files.image) {
+//     req.files.image.mv(`./image/${req.files.image.name}`, (err) => {
+//       if (err) throw err;
+//       const newMessage = new Message({
+//         username: req.body.username,
+//         message: req.body.message,
+//         image_path: `/image/${req.files.image.name}`,
+//       });
+//       newMessage.save((saveErr) => {
+//         if (saveErr) throw saveErr;
+//         return res.redirect('/');
+//       });
+//     });
+//   } else {
+//     const newMessage = new Message({
+//       username: req.body.username,
+//       message: req.body.message,
+//     });
+//     newMessage.save((saveErr) => {
+//       if (saveErr) throw saveErr;
+//       return res.redirect('/');
+//     });
+//   }
+// });
 
-/*
- * API
- */
-app.get('/postList', (req, res) => {
-  Message.find({}, (err, messages) => {
-    if (err) throw err;
-    return res.send(messages);
-  });
-});
+// 404 redirect to top page
+app.get('*', (req, res) => res.sendfile(path.join(__dirname, '../public', 'index.html')));
 
 
 /*

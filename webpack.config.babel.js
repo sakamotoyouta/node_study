@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const path = require('path');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 module.exports = {
@@ -7,7 +6,7 @@ module.exports = {
 
   entry: [
     'webpack-hot-middleware/client',
-    "./frontend/index",
+    './frontend/index',
   ],
 
   output: {
