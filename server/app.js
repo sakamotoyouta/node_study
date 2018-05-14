@@ -1,7 +1,8 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const bodyparser = require('body-parser');
+const fs = require('fs');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
 const Message = require('./schema/Message');
@@ -37,7 +38,6 @@ mongoose.connect('mongodb://localhost:27017/chatapp', (err) => {
  * ミドルウェア
  */
 app.use(express.static(`${__dirname}/public`));
-app.use(bodyparser());
 app.use(session({ secret: 'HogeFuga' }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -74,36 +74,33 @@ app.set('view engine', 'pug');
 /*
  * API
  */
-app.get('/postList', (req, res) => {
+const jsonParser = bodyParser.json();
+app.get('/postList', jsonParser, (req, res) => {
   Message.find({}, (err, messages) => {
     if (err) throw err;
     return res.send(messages);
   });
 });
 
-app.post('/postList', (req, res) => {
-  if (req.files && req.files.image) {
-    req.files.image.mv(`./image/${req.files.image.name}`, (err) => {
-      if (err) throw err;
-      const newMessage = new Message({
-        username: req.body.username,
-        message: req.body.message,
-        image_path: `/image/${req.files.image.name}`,
-      });
-      newMessage.save((saveErr) => {
-        if (saveErr) throw saveErr;
-        return res.redirect('/');
-      });
-    });
+const rawParser = bodyParser.raw({ extended: true, limit: '50mb' });
+app.post('/postList', rawParser, (req, res) => {
+  if (req.body && req.get('X-UserName') && req.get('X-Message')) {
+    // fs.writeFileSync(`${__dirname}/image/testfile.jpg`, req.body);
+    // req.files.image.mv(`./image/${req.files.image.name}`, (err) => {
+  //   if (err) throw err;
+  //   const newMessage = new Message({
+  //     username: req.body.username,
+  //     message: req.body.message,
+  //     image_path: `/image/${req.files.image.name}`,
+  //   });
+  //   newMessage.save((saveErr) => {
+  //     if (saveErr) throw saveErr;
+  //     return res.redirect('/');
+  //   });
+  // });
   } else {
-    const newMessage = new Message({
-      username: req.body.username,
-      message: req.body.message,
-    });
-    newMessage.save((saveErr) => {
-      if (saveErr) throw saveErr;
-      return res.redirect('/');
-    });
+    // TODO：Bad Request的なメッセージを送る
+    res.sendStatus(400);
   }
 });
 

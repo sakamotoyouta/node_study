@@ -1,4 +1,7 @@
 export const ActionType = {
   SEND: 'SEND',
   FETCH_POST_LIST: 'FETCH_POST_LIST',
+  INPUT_TEXT: 'INPUT_TEXT',
+  INPUT_FILE: 'INPUT_FILE',
+  POST_IMAGE: 'POST_IMAGE',
 };

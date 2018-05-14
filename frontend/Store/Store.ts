@@ -3,6 +3,7 @@ import createHistory from 'history/createBrowserHistory';
 import { routerReducer, routerMiddleware} from 'react-router-redux';
 import formReducer from '../Reducer/FormReducer';
 import postListReducer from '../Reducer/PostListReducer';
+import handleInputReducer from '../Reducer/HandleInputReducer';
 
 /*
  * 初期state
@@ -10,11 +11,13 @@ import postListReducer from '../Reducer/PostListReducer';
 const initialState: any = {
   value: null,
   postList: [],
+  inputData: {},
 };
 
 const combinedReducer = combineReducers({
   value: formReducer,
   postList: postListReducer,
+  inputData: handleInputReducer,
 });
 
 /*

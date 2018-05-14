@@ -3,9 +3,14 @@ import { hot } from 'react-hot-loader';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
-interface FormDisplayProps { }
+interface FormDisplayProps {
+  handleTextInputChange: ((event: any, value: string) => void);
+  handleFileInputChange: ((event: any) => void);
+  onClickSubmit: Function;
+  inputData: Object;
+}
 
-class CreatePostFormComponent extends React.Component<FormDisplayProps, {}> {
+class CreatePostFormComponent extends React.Component<FormDisplayProps, any> {
   static style : {[key: string]: object;}  = {
     fileInput: {
       cursor: 'pointer',
@@ -20,23 +25,44 @@ class CreatePostFormComponent extends React.Component<FormDisplayProps, {}> {
   }
 
   render() {
+    // User Nameはあとで取り除く
     return (
       <div>
         <div>
-          <TextField floatingLabelText="User Name(Provisional)"/>
+          <TextField
+            name="userName"
+            floatingLabelText="User Name(Provisional)"
+            onChange={(e, value) => { this.props.handleTextInputChange(e, value); }}
+          />
         </div>
         <div style={{ marginBottom: '30px' }}>
-          <TextField floatingLabelText="Message"/>
+          <TextField
+            name="message"
+            floatingLabelText="Message"
+            onChange={(e, value) => { this.props.handleTextInputChange(e, value); }}
+          />
         </div>
-        <div>
+        <div style={{marginBottom: '30px'}}>
           <RaisedButton
             containerElement='label'
             label='Choose an Image'
             labelPosition="before"
             icon={<i className="material-icons pb-3">add_a_photo</i>}
           >
-            <input type="file" style={CreatePostFormComponent.style.fileInput} />
+            <input
+              type="file"
+              style={CreatePostFormComponent.style.fileInput}
+              name="image"
+              onChange={(e) => {this.props.handleFileInputChange(e);}}
+              accept="image/**"
+            />
           </RaisedButton>
+        </div>
+        <div>
+          <RaisedButton
+            label='POST'
+            onClick={() => {this.props.onClickSubmit(this.props.inputData);}}
+          />
         </div>
       </div>
     );
