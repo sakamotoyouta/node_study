@@ -12,6 +12,7 @@ sudo mongod --dbpath server/db
 npm start
 
 # TODO
+- [ ] 動作させることを優先したのでリファクタリングする
 - [ ] body-parserはdeprecatedなので代替方法を探す
 - [ ] express-sessionはdeprecatedなので代替方法を探す
 - [ ] エラーハンドリングは後回しにしている
